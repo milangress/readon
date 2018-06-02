@@ -1,28 +1,47 @@
 <template>
-  <div id="app">
-    <img src="./assets/logo.png">
-    <HelloWorld msg="Welcome to Your Vue.js App"/>
-  </div>
+    <div id="app">
+        <div>{{test()}}</div>
+        <ul v-if="todos && todos.length">
+            <li v-for="todo of todos">
+                {{ todo.title }}
+            </li>
+        </ul>
+
+    </div>
 </template>
 
 <script>
-import HelloWorld from './components/HelloWorld.vue'
+    import Arena from 'are.na';
+    const arena = new Arena();
 
-export default {
-  name: 'app',
-  components: {
-    HelloWorld
-  }
-}
+    export default {
+        name: "App",
+        data() {
+            return {
+                message: 'test',
+                todos: []
+            }
+        },
+        methods: {
+            test() {
+                window.console.log('test')
+            },
+        },
+        mounted: function () {
+            this.$nextTick(function () {
+                arena.channel('arena-influences').get()
+                    .then(chanel => {
+                        chanel.contents.map(item => {
+                            window.console.log(item.title);
+                            this.todos.push(item)
+                        })
+                    })
+                    .catch(err => window.console.log(err));
+            })
+        }
+    }
 </script>
 
 <style>
-#app {
-  font-family: 'Avenir', Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
-}
+
 </style>
